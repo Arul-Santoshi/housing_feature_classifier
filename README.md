@@ -8,9 +8,9 @@ This project builds machine learning models that predict house prices based on v
 
 1. **Linear Regression** - A baseline model achieving R² = 0.70
 2. **Random Forest Regressor** - An ensemble model achieving R² = 0.86
-3. **XGBoost Gradient Boosting** - Best performing model achieving R² = 0.86
+3. **XGBoost Gradient Boosting** - Best performing model achieving R² = 0.87
 
-XGBoost achieves the best performance with an R² of 0.8637, reducing prediction errors by 46% compared to Linear Regression and 5% compared to Random Forest.
+XGBoost achieves the best performance with an R² of 0.8707, reducing prediction errors by 46% compared to Linear Regression and 5% compared to Random Forest.
 
 ## Dataset
 
@@ -48,20 +48,20 @@ The model uses the following 14 features:
 
 | Metric | Linear Regression | Random Forest | XGBoost | Best Improvement |
 |--------|------------------|---------------|---------|------------------|
-| **R² Score** | 0.6998 | 0.8566 | **0.8637** | +23.43% vs LR |
-| **MAE** | $127,474 | $72,158 | **$68,561** | +46.22% vs LR |
-| **RMSE** | $213,017 | $147,218 | **$143,528** | +32.62% vs LR |
-| **MSE** | $45.4B | $21.7B | **$20.6B** | +54.62% vs LR |
+| **R² Score** | 0.6998 | 0.8566 | **0.8707** | +24.41% vs LR |
+| **MAE** | $127,474 | $72,158 | **$68,452** | +46.30% vs LR |
+| **RMSE** | $213,017 | $147,218 | **$139,832** | +34.36% vs LR |
+| **MSE** | $45.4B | $21.7B | **$19.6B** | +56.93% vs LR |
 
 ### XGBoost Model (Best Performing)
 
 **Test Set Metrics:**
 | Metric | Value |
 |--------|-------|
-| **R-squared (R²)** | 0.8637 |
-| **Mean Absolute Error (MAE)** | $68,560.93 |
-| **Root Mean Squared Error (RMSE)** | $143,527.87 |
-| **Mean Squared Error (MSE)** | $20,600,249,356 |
+| **R-squared (R²)** | 0.8707 |
+| **Mean Absolute Error (MAE)** | $68,451.67 |
+| **Root Mean Squared Error (RMSE)** | $139,832.02 |
+| **Mean Squared Error (MSE)** | $19,552,993,644 |
 
 **Model Parameters:**
 - `n_estimators`: 200 boosting rounds
@@ -74,14 +74,14 @@ The model uses the following 14 features:
 - `random_state`: 42
 
 **Interpretation:**
-- The model explains **86.4%** of the variance in house prices
-- On average, predictions are off by approximately **$68,561**
-- Better generalization than Random Forest (train/test R² difference: 0.1007) due to regularization
+- The model explains **87.1%** of the variance in house prices
+- On average, predictions are off by approximately **$68,452**
+- Better generalization than Random Forest (train/test R² difference: 0.0943) due to regularization
 
 **Prediction Accuracy:**
-- **55.8%** of predictions within 10% of actual price
-- **83.0%** of predictions within 20% of actual price
-- **92.1%** of predictions within 30% of actual price
+- **56.6%** of predictions within 10% of actual price
+- **82.6%** of predictions within 20% of actual price
+- **92.4%** of predictions within 30% of actual price
 
 ### Random Forest Model
 
@@ -137,26 +137,26 @@ The XGBoost model reveals the most predictive features based on gain importance:
 
 | Rank | Feature | Importance | Percentage |
 |------|---------|------------|------------|
-| 1 | **grade** | 0.3582 | 35.82% |
-| 2 | **waterfront** | 0.2018 | 20.18% |
-| 3 | **sqft_living** | 0.1437 | 14.37% |
-| 4 | **lat** | 0.0742 | 7.42% |
-| 5 | **view** | 0.0444 | 4.44% |
-| 6 | **long** | 0.0348 | 3.48% |
-| 7 | **bathrooms** | 0.0327 | 3.27% |
-| 8 | **yr_built** | 0.0306 | 3.06% |
-| 9 | **zipcode** | 0.0294 | 2.94% |
-| 10 | **sqft_lot** | 0.0141 | 1.41% |
-| 11 | **yr_renovated** | 0.0132 | 1.32% |
-| 12 | **condition** | 0.0120 | 1.20% |
-| 13 | **floors** | 0.0068 | 0.68% |
-| 14 | **bedrooms** | 0.0039 | 0.39% |
+| 1 | **grade** | 0.3429 | 34.29% |
+| 2 | **waterfront** | 0.2123 | 21.23% |
+| 3 | **sqft_living** | 0.1601 | 16.01% |
+| 4 | **lat** | 0.0772 | 7.72% |
+| 5 | **view** | 0.0421 | 4.21% |
+| 6 | **long** | 0.0367 | 3.67% |
+| 7 | **bathrooms** | 0.0323 | 3.23% |
+| 8 | **yr_built** | 0.0244 | 2.44% |
+| 9 | **zipcode** | 0.0211 | 2.11% |
+| 10 | **yr_renovated** | 0.0143 | 1.43% |
+| 11 | **sqft_lot** | 0.0138 | 1.38% |
+| 12 | **condition** | 0.0091 | 0.91% |
+| 13 | **floors** | 0.0086 | 0.86% |
+| 14 | **bedrooms** | 0.0053 | 0.53% |
 
 **Key Insights:**
-- **grade** (construction quality) is the most important predictor at 35.82%
-- **waterfront** has much higher importance in XGBoost (20.18%) vs Random Forest (3.47%) - XGBoost better captures this binary feature's impact
-- **sqft_living** remains crucial at 14.37%
-- The top 3 features account for **70.37%** of total feature importance
+- **grade** (construction quality) is the most important predictor at 34.29%
+- **waterfront** has much higher importance in XGBoost (21.23%) vs Random Forest (3.47%) - XGBoost better captures this binary feature's impact
+- **sqft_living** remains crucial at 16.01%
+- The top 3 features account for **71.53%** of total feature importance
 
 ### Random Forest Feature Importance
 
@@ -296,7 +296,7 @@ Available for all models: `residuals_plot.png`, `rf_residuals_plot.png`, `xgb_re
 
 ## Limitations
 
-1. **Model Overfitting**: Both Random Forest (train/test R² diff: 0.12) and XGBoost (diff: 0.10) show some overfitting, though XGBoost's regularization helps control this
+1. **Model Overfitting**: Both Random Forest (train/test R² diff: 0.12) and XGBoost (diff: 0.09) show some overfitting, though XGBoost's regularization helps control this
 2. **Feature Engineering**: Additional derived features (e.g., price per sqft, age of house) could improve performance
 3. **Temporal Effects**: The models don't account for time-series effects in housing prices
 4. **Outlier Sensitivity**: High-value properties (>$2M) may have larger prediction errors

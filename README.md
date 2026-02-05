@@ -4,12 +4,13 @@ Machine learning models to predict house prices in King County, Seattle area usi
 
 ## Overview
 
-This project builds machine learning models that predict house prices based on various features such as square footage, number of bedrooms/bathrooms, location, and property condition. The project implements two regression models:
+This project builds machine learning models that predict house prices based on various features such as square footage, number of bedrooms/bathrooms, location, and property condition. The project implements three regression models:
 
 1. **Linear Regression** - A baseline model achieving R² = 0.70
 2. **Random Forest Regressor** - An ensemble model achieving R² = 0.86
+3. **XGBoost Gradient Boosting** - Best performing model achieving R² = 0.86
 
-The Random Forest model significantly outperforms Linear Regression, reducing prediction errors by over 43%.
+XGBoost achieves the best performance with an R² of 0.8637, reducing prediction errors by 46% compared to Linear Regression and 5% compared to Random Forest.
 
 ## Dataset
 
@@ -45,14 +46,44 @@ The model uses the following 14 features:
 
 ### Model Comparison Summary
 
-| Metric | Linear Regression | Random Forest | Improvement |
-|--------|------------------|---------------|-------------|
-| **R² Score** | 0.6998 | **0.8566** | +22.40% |
-| **MAE** | $127,474 | **$72,158** | +43.39% |
-| **RMSE** | $213,017 | **$147,218** | +30.89% |
-| **MSE** | $45.4B | **$21.7B** | +52.24% |
+| Metric | Linear Regression | Random Forest | XGBoost | Best Improvement |
+|--------|------------------|---------------|---------|------------------|
+| **R² Score** | 0.6998 | 0.8566 | **0.8637** | +23.43% vs LR |
+| **MAE** | $127,474 | $72,158 | **$68,561** | +46.22% vs LR |
+| **RMSE** | $213,017 | $147,218 | **$143,528** | +32.62% vs LR |
+| **MSE** | $45.4B | $21.7B | **$20.6B** | +54.62% vs LR |
 
-### Random Forest Model (Best Performing)
+### XGBoost Model (Best Performing)
+
+**Test Set Metrics:**
+| Metric | Value |
+|--------|-------|
+| **R-squared (R²)** | 0.8637 |
+| **Mean Absolute Error (MAE)** | $68,560.93 |
+| **Root Mean Squared Error (RMSE)** | $143,527.87 |
+| **Mean Squared Error (MSE)** | $20,600,249,356 |
+
+**Model Parameters:**
+- `n_estimators`: 200 boosting rounds
+- `max_depth`: 6 (lower than RF - regularization)
+- `learning_rate`: 0.1 (step size shrinkage)
+- `subsample`: 0.8 (80% samples per tree)
+- `colsample_bytree`: 0.8 (80% features per tree)
+- `reg_alpha`: 0.1 (L1 regularization)
+- `reg_lambda`: 1.0 (L2 regularization)
+- `random_state`: 42
+
+**Interpretation:**
+- The model explains **86.4%** of the variance in house prices
+- On average, predictions are off by approximately **$68,561**
+- Better generalization than Random Forest (train/test R² difference: 0.1007) due to regularization
+
+**Prediction Accuracy:**
+- **55.8%** of predictions within 10% of actual price
+- **83.0%** of predictions within 20% of actual price
+- **92.1%** of predictions within 30% of actual price
+
+### Random Forest Model
 
 **Test Set Metrics:**
 | Metric | Value |
@@ -100,9 +131,34 @@ The model uses the following 14 features:
 
 ## Key Findings
 
-### Random Forest Feature Importance
+### XGBoost Feature Importance (Best Model)
 
-The Random Forest model reveals the most predictive features based on Gini importance:
+The XGBoost model reveals the most predictive features based on gain importance:
+
+| Rank | Feature | Importance | Percentage |
+|------|---------|------------|------------|
+| 1 | **grade** | 0.3582 | 35.82% |
+| 2 | **waterfront** | 0.2018 | 20.18% |
+| 3 | **sqft_living** | 0.1437 | 14.37% |
+| 4 | **lat** | 0.0742 | 7.42% |
+| 5 | **view** | 0.0444 | 4.44% |
+| 6 | **long** | 0.0348 | 3.48% |
+| 7 | **bathrooms** | 0.0327 | 3.27% |
+| 8 | **yr_built** | 0.0306 | 3.06% |
+| 9 | **zipcode** | 0.0294 | 2.94% |
+| 10 | **sqft_lot** | 0.0141 | 1.41% |
+| 11 | **yr_renovated** | 0.0132 | 1.32% |
+| 12 | **condition** | 0.0120 | 1.20% |
+| 13 | **floors** | 0.0068 | 0.68% |
+| 14 | **bedrooms** | 0.0039 | 0.39% |
+
+**Key Insights:**
+- **grade** (construction quality) is the most important predictor at 35.82%
+- **waterfront** has much higher importance in XGBoost (20.18%) vs Random Forest (3.47%) - XGBoost better captures this binary feature's impact
+- **sqft_living** remains crucial at 14.37%
+- The top 3 features account for **70.37%** of total feature importance
+
+### Random Forest Feature Importance
 
 | Rank | Feature | Importance | Percentage |
 |------|---------|------------|------------|
@@ -111,21 +167,6 @@ The Random Forest model reveals the most predictive features based on Gini impor
 | 3 | **lat** | 0.1625 | 16.25% |
 | 4 | **long** | 0.0690 | 6.90% |
 | 5 | **yr_built** | 0.0366 | 3.66% |
-| 6 | **waterfront** | 0.0347 | 3.47% |
-| 7 | **sqft_lot** | 0.0242 | 2.42% |
-| 8 | **zipcode** | 0.0187 | 1.87% |
-| 9 | **bathrooms** | 0.0133 | 1.33% |
-| 10 | **view** | 0.0121 | 1.21% |
-| 11 | **bedrooms** | 0.0038 | 0.38% |
-| 12 | **condition** | 0.0034 | 0.34% |
-| 13 | **floors** | 0.0026 | 0.26% |
-| 14 | **yr_renovated** | 0.0025 | 0.25% |
-
-**Key Insights:**
-- **grade** (construction quality) is the most important predictor, accounting for 32.45% of the model's decision-making
-- **sqft_living** follows closely at 29.22%, confirming that living space size is crucial
-- **Location matters**: lat and long together contribute 23.15% of importance
-- The top 3 features alone account for **77.92%** of total feature importance
 
 ### Linear Regression Feature Coefficients
 
@@ -151,23 +192,30 @@ The price distribution is right-skewed, with most houses priced below the mean.
 housing_feature_classifier/
 ├── housing_price_prediction.py   # Linear Regression model script
 ├── random_forest_model.py        # Random Forest model script
+├── gradient_boosting_model.py    # XGBoost model script
 ├── requirements.txt              # Python dependencies
 ├── README.md                     # This file
 ├── data/
 │   └── kc_house_data.csv         # Downloaded dataset
 └── output/
-    ├── price_distribution.png    # Price distribution histogram
-    ├── actual_vs_predicted.png   # Linear Regression: Actual vs predicted
-    ├── residuals_plot.png        # Linear Regression: Residuals analysis
-    ├── feature_importance.png    # Linear Regression: Feature coefficients
-    ├── prediction_results.csv    # Linear Regression: Detailed predictions
-    ├── model_metrics.csv         # Linear Regression: Performance metrics
+    ├── price_distribution.png       # Price distribution histogram
+    ├── actual_vs_predicted.png      # Linear Regression: Actual vs predicted
+    ├── residuals_plot.png           # Linear Regression: Residuals analysis
+    ├── feature_importance.png       # Linear Regression: Feature coefficients
+    ├── prediction_results.csv       # Linear Regression: Detailed predictions
+    ├── model_metrics.csv            # Linear Regression: Performance metrics
     ├── rf_actual_vs_predicted.png   # Random Forest: Actual vs predicted
     ├── rf_residuals_plot.png        # Random Forest: Residuals analysis
     ├── rf_feature_importance.png    # Random Forest: Feature importance
     ├── rf_prediction_results.csv    # Random Forest: Detailed predictions
     ├── rf_model_metrics.csv         # Random Forest: Performance metrics
-    └── model_comparison.png         # Model comparison visualization
+    ├── model_comparison.png         # LR vs RF comparison
+    ├── xgb_actual_vs_predicted.png  # XGBoost: Actual vs predicted
+    ├── xgb_residuals_plot.png       # XGBoost: Residuals analysis
+    ├── xgb_feature_importance.png   # XGBoost: Feature importance
+    ├── xgb_prediction_results.csv   # XGBoost: Detailed predictions
+    ├── xgb_model_metrics.csv        # XGBoost: Performance metrics
+    └── all_models_comparison.png    # LR vs RF vs XGBoost comparison
 ```
 
 ## Replication Instructions
@@ -190,7 +238,7 @@ housing_feature_classifier/
    pip install -r requirements.txt
    ```
 
-3. **Run the Linear Regression model**
+3. **Run the Linear Regression model** (baseline)
    ```bash
    python housing_price_prediction.py
    ```
@@ -200,14 +248,18 @@ housing_feature_classifier/
    python random_forest_model.py
    ```
 
-   Both scripts will:
+5. **Run the XGBoost model** (best performing)
+   ```bash
+   python gradient_boosting_model.py
+   ```
+
+   All scripts will:
    - Download the dataset automatically (or use local file if available)
    - Preprocess the data (encoding, scaling)
    - Train the respective model
    - Generate evaluation metrics and visualizations
    - Save results to the `output/` directory
-
-   The Random Forest script additionally creates a model comparison visualization.
+   - Create model comparison visualizations
 
 ### Using Your Own Data
 
@@ -222,39 +274,44 @@ To use a different dataset:
 Shows the distribution of house prices, including a log-transformed view for better visualization of the right-skewed data.
 
 ### Actual vs Predicted
-Scatter plot comparing actual prices to predicted prices, with a perfect prediction line for reference. Available for both models:
+Scatter plot comparing actual prices to predicted prices, with a perfect prediction line for reference. Available for all models:
 - `actual_vs_predicted.png` - Linear Regression
 - `rf_actual_vs_predicted.png` - Random Forest
+- `xgb_actual_vs_predicted.png` - XGBoost
 
 ### Residuals Plot
 - Left: Residuals vs predicted values (checking for heteroscedasticity)
 - Right: Distribution of residuals (checking for normality)
 
-Available for both models with `residuals_plot.png` and `rf_residuals_plot.png`.
+Available for all models: `residuals_plot.png`, `rf_residuals_plot.png`, `xgb_residuals_plot.png`
 
 ### Feature Importance
 - **Linear Regression** (`feature_importance.png`): Horizontal bar chart showing coefficient values
 - **Random Forest** (`rf_feature_importance.png`): Bar chart showing Gini importance scores
+- **XGBoost** (`xgb_feature_importance.png`): Bar chart showing gain-based importance scores
 
 ### Model Comparison
-`model_comparison.png` provides a side-by-side comparison of Linear Regression vs Random Forest across three key metrics: R² Score, MAE, and RMSE.
+- `model_comparison.png` - Linear Regression vs Random Forest comparison
+- `all_models_comparison.png` - All three models (LR vs RF vs XGBoost) side-by-side comparison across R² Score, MAE, and RMSE
 
 ## Limitations
 
-1. **Random Forest Overfitting**: The Random Forest model shows some overfitting (train R² = 0.97 vs test R² = 0.86), though this is expected behavior for ensemble tree models
+1. **Model Overfitting**: Both Random Forest (train/test R² diff: 0.12) and XGBoost (diff: 0.10) show some overfitting, though XGBoost's regularization helps control this
 2. **Feature Engineering**: Additional derived features (e.g., price per sqft, age of house) could improve performance
 3. **Temporal Effects**: The models don't account for time-series effects in housing prices
 4. **Outlier Sensitivity**: High-value properties (>$2M) may have larger prediction errors
+5. **Geographic Granularity**: Zipcode encoding may not capture neighborhood-level price variations
 
 ## Future Improvements
 
-- Implement Gradient Boosting (XGBoost, LightGBM) for potential further improvements
+- Hyperparameter tuning using GridSearchCV or RandomizedSearchCV for all models
 - Add cross-validation for more robust evaluation
-- Feature engineering (house age, renovation flag, location clusters)
-- Handle outliers more sophisticatedly
+- Feature engineering (house age, renovation flag, location clusters, price per sqft)
+- Try LightGBM and CatBoost for comparison
+- Handle outliers more sophisticatedly (robust scaling, trimming)
 - Add log transformation of the target variable
-- Hyperparameter tuning using GridSearchCV or RandomizedSearchCV
 - Implement model stacking/blending for ensemble predictions
+- Add SHAP values for better model interpretability
 
 ## Dependencies
 
@@ -263,6 +320,7 @@ Available for both models with `residuals_plot.png` and `rf_residuals_plot.png`.
 - scikit-learn >= 1.0.0
 - matplotlib >= 3.5.0
 - seaborn >= 0.11.0
+- xgboost >= 1.7.0
 
 ## License
 

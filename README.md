@@ -10,9 +10,9 @@ This project builds machine learning models that predict house prices based on v
 2. **Random Forest Regressor** - An ensemble model achieving R² = 0.86
 3. **XGBoost Gradient Boosting** - Best performing model achieving R² = 0.87
 
-Additionally, the project includes **hyperparameter tuning** using RandomizedSearchCV, which improves the XGBoost model to R² = 0.88.
+Additionally, the project includes **hyperparameter tuning** using RandomizedSearchCV to explore potential improvements to the XGBoost model.
 
-XGBoost with tuned hyperparameters achieves the best performance with an R² of 0.8796, reducing prediction errors by 48% compared to Linear Regression.
+XGBoost achieves the best performance with an R² of 0.8707, reducing prediction errors by 46% compared to Linear Regression.
 
 ## Dataset
 
@@ -48,40 +48,14 @@ The model uses the following 14 features:
 
 ### Model Comparison Summary
 
-| Metric | Linear Regression | Random Forest | XGBoost | XGBoost (Tuned) | Best Improvement |
-|--------|------------------|---------------|---------|-----------------|------------------|
-| **R² Score** | 0.6998 | 0.8566 | 0.8707 | **0.8796** | +25.69% vs LR |
-| **MAE** | $127,474 | $72,158 | $68,452 | **$66,714** | +47.67% vs LR |
-| **RMSE** | $213,017 | $147,218 | $139,832 | **$134,891** | +36.68% vs LR |
-| **MSE** | $45.4B | $21.7B | $19.6B | **$18.2B** | +59.89% vs LR |
+| Metric | Linear Regression | Random Forest | XGBoost | Best Improvement |
+|--------|------------------|---------------|---------|------------------|
+| **R² Score** | 0.6998 | 0.8566 | **0.8707** | +24.41% vs LR |
+| **MAE** | $127,474 | $72,158 | **$68,452** | +46.30% vs LR |
+| **RMSE** | $213,017 | $147,218 | **$139,832** | +34.36% vs LR |
+| **MSE** | $45.4B | $21.7B | **$19.6B** | +56.93% vs LR |
 
-### XGBoost Tuned Model (Best Performing)
-
-**Test Set Metrics:**
-| Metric | Value |
-|--------|-------|
-| **R-squared (R²)** | 0.8796 |
-| **Mean Absolute Error (MAE)** | $66,714.38 |
-| **Root Mean Squared Error (RMSE)** | $134,891.14 |
-| **Mean Squared Error (MSE)** | $18,195,618,048 |
-
-**Optimized Parameters (via RandomizedSearchCV):**
-- `n_estimators`: 500 boosting rounds
-- `max_depth`: 7
-- `learning_rate`: 0.03 (lower = more robust)
-- `subsample`: 1.0 (100% samples)
-- `colsample_bytree`: 0.6 (60% features per tree)
-- `min_child_weight`: 1
-- `gamma`: 0 (no minimum loss reduction)
-- `reg_alpha`: 1.0 (L1 regularization)
-- `reg_lambda`: 0.5 (L2 regularization)
-
-**Improvement over baseline XGBoost:**
-- R² Score: +1.84%
-- MAE: -$1,847 per prediction
-- RMSE: -$8,637
-
-### XGBoost Model (Baseline)
+### XGBoost Model (Best Performing)
 
 **Test Set Metrics:**
 | Metric | Value |
@@ -288,7 +262,7 @@ housing_feature_classifier/
    python gradient_boosting_model.py
    ```
 
-6. **Run hyperparameter tuning** (optional, for best results)
+6. **Run hyperparameter tuning** (optional)
    ```bash
    python hyperparameter_tuning.py                # Default: 50 iterations
    python hyperparameter_tuning.py --n-iter 100   # More thorough search
@@ -309,6 +283,8 @@ housing_feature_classifier/
    - Compare tuned model vs baseline performance
    - Save best parameters to `output/best_params.json`
    - Generate tuning analysis visualizations
+
+   **Note:** The baseline XGBoost model is already well-optimized. Hyperparameter tuning results vary due to the random search process and may not always improve upon the baseline. More iterations (100+) generally yield better results.
 
 ### Using Your Own Data
 
